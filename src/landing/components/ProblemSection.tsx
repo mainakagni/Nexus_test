@@ -33,7 +33,7 @@ export function ProblemSection() {
             margin: 0,
             fontFamily: '"DM Sans", system-ui, sans-serif',
             fontSize: 32,
-            fontWeight: 650,
+            fontWeight: 700,
             lineHeight: 1.25,
             letterSpacing: '-0.02em',
             color: '#1B2432',
