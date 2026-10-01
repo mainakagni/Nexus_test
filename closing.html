@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Closing — Book a Demo</title>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: 'DM Sans', 'Outfit', system-ui, sans-serif;
+      background: #0a0f1e;
+      color: #f0f4ff;
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .closing {
+      text-align: center;
+      padding: 80px 24px;
+      max-width: 560px;
+      margin: 0 auto;
+    }
+
+    .closing__line {
+      font-size: clamp(1.25rem, 4vw, 1.75rem);
+      font-weight: 500;
+      line-height: 1.4;
+      color: #d0dbff;
+      margin-bottom: 40px;
+    }
+
+    .closing__cta {
+      display: inline-block;
+      background: #2563eb;
+      color: #fff;
+      font-size: 1rem;
+      font-weight: 600;
+      padding: 14px 32px;
+      border-radius: 8px;
+      text-decoration: none;
+      border: none;
+      cursor: pointer;
+      transition: background 0.15s ease;
+    }
+
+    .closing__cta:hover,
+    .closing__cta:focus-visible {
+      background: #1d4ed8;
+      outline: 2px solid #93c5fd;
+      outline-offset: 2px;
+    }
+
+    @media (max-width: 480px) {
+      .closing__cta {
+        display: block;
+        width: 100%;
+      }
+    }
+  </style>
+</head>
+<body>
+  <section class="closing" aria-label="Closing call to action">
+    <p class="closing__line">See your portfolio's pulse in 15 minutes.</p>
+    <a href="/book-demo" class="closing__cta">Book a demo</a>
+  </section>
+</body>
+</html>
