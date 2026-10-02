@@ -5,6 +5,9 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Nexus Pulse — Know which accounts need attention today</title>
   <meta name="description" content="Know which accounts need attention today, with numbers you can defend. Book a 15-minute demo." />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
   <style>
     *, *::before, *::after {
       box-sizing: border-box;
@@ -272,6 +275,10 @@
 
     @media (max-width: 720px) {
       .promise-layout { grid-template-columns: 1fr; gap: 40px; }
+    }
+
+    @media (max-width: 480px) {
+      .hide-sm { display: none; }
     }
 
     .promise-list {
