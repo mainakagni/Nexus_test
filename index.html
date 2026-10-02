@@ -1,0 +1,708 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Nexus Pulse — Know which accounts need attention today</title>
+  <meta name="description" content="Know which accounts need attention today, with numbers you can defend. Book a 15-minute demo." />
+  <style>
+    *, *::before, *::after {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    :root {
+      --color-bg: #0a0f1e;
+      --color-surface: #111827;
+      --color-surface-2: #1c2740;
+      --color-border: rgba(255,255,255,0.08);
+      --color-text: #f0f4ff;
+      --color-muted: #8b95b0;
+      --color-accent: #4f8ef7;
+      --color-accent-hover: #6fa3ff;
+      --color-accent-glow: rgba(79,142,247,0.25);
+      --color-warn: #f97316;
+      --color-warn-light: rgba(249,115,22,0.15);
+      --radius: 12px;
+      --radius-lg: 20px;
+    }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      background: var(--color-bg);
+      color: var(--color-text);
+      font-family: 'Inter', system-ui, -apple-system, sans-serif;
+      font-size: 16px;
+      line-height: 1.6;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    /* ── Typography ── */
+    .eyebrow {
+      font-size: 0.75rem;
+      font-weight: 600;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: var(--color-accent);
+    }
+
+    h1 {
+      font-size: clamp(2.4rem, 6vw, 4.2rem);
+      font-weight: 800;
+      line-height: 1.1;
+      letter-spacing: -0.02em;
+    }
+
+    h2 {
+      font-size: clamp(1.6rem, 3.5vw, 2.4rem);
+      font-weight: 700;
+      line-height: 1.2;
+      letter-spacing: -0.015em;
+    }
+
+    h3 {
+      font-size: 1.1rem;
+      font-weight: 600;
+      line-height: 1.4;
+    }
+
+    p { color: var(--color-muted); }
+
+    /* ── Layout ── */
+    .container {
+      max-width: 1100px;
+      margin: 0 auto;
+      padding: 0 24px;
+    }
+
+    section {
+      padding: 100px 0;
+    }
+
+    /* ── CTA Button ── */
+    .cta {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      background: var(--color-accent);
+      color: #fff;
+      font-weight: 700;
+      font-size: 1rem;
+      text-decoration: none;
+      padding: 16px 36px;
+      border-radius: 50px;
+      transition: background 0.2s, transform 0.15s, box-shadow 0.2s;
+      box-shadow: 0 0 0 0 var(--color-accent-glow);
+    }
+
+    .cta:hover {
+      background: var(--color-accent-hover);
+      transform: translateY(-2px);
+      box-shadow: 0 8px 32px var(--color-accent-glow);
+    }
+
+    .cta:active { transform: translateY(0); }
+
+    .cta svg { flex-shrink: 0; }
+
+    /* ── Wordmark ── */
+    header {
+      padding: 24px 0;
+      border-bottom: 1px solid var(--color-border);
+    }
+
+    .wordmark {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      text-decoration: none;
+    }
+
+    .wordmark-icon {
+      width: 32px;
+      height: 32px;
+      background: linear-gradient(135deg, var(--color-accent), #7c3aed);
+      border-radius: 8px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .wordmark-text {
+      font-size: 1.15rem;
+      font-weight: 700;
+      color: var(--color-text);
+      letter-spacing: -0.01em;
+    }
+
+    .wordmark-text span {
+      color: var(--color-accent);
+    }
+
+    /* ── Hero ── */
+    #hero {
+      padding: 120px 0 100px;
+      text-align: center;
+      position: relative;
+      overflow: hidden;
+    }
+
+    #hero::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background:
+        radial-gradient(ellipse 80% 60% at 50% 0%, rgba(79,142,247,0.12) 0%, transparent 70%),
+        radial-gradient(ellipse 60% 40% at 80% 80%, rgba(124,58,237,0.07) 0%, transparent 70%);
+      pointer-events: none;
+    }
+
+    .hero-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      background: var(--color-surface);
+      border: 1px solid var(--color-border);
+      border-radius: 50px;
+      padding: 6px 16px;
+      margin-bottom: 32px;
+      font-size: 0.8rem;
+      font-weight: 500;
+      color: var(--color-muted);
+    }
+
+    .hero-badge .dot {
+      width: 6px;
+      height: 6px;
+      border-radius: 50%;
+      background: var(--color-warn);
+      animation: pulse 2s ease-in-out infinite;
+    }
+
+    @keyframes pulse {
+      0%, 100% { opacity: 1; transform: scale(1); }
+      50% { opacity: 0.5; transform: scale(0.85); }
+    }
+
+    .hero-title {
+      max-width: 800px;
+      margin: 0 auto 28px;
+    }
+
+    .hero-title .highlight {
+      background: linear-gradient(90deg, var(--color-accent), #a78bfa);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+
+    .hero-subtitle {
+      font-size: 1.2rem;
+      max-width: 560px;
+      margin: 0 auto 48px;
+      line-height: 1.7;
+    }
+
+    .hero-trust {
+      margin-top: 56px;
+      font-size: 0.8rem;
+      color: var(--color-muted);
+    }
+
+    .hero-trust strong { color: var(--color-text); }
+
+    /* ── Problem section ── */
+    #problem {
+      border-top: 1px solid var(--color-border);
+    }
+
+    .problem-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+      gap: 20px;
+      margin-top: 56px;
+    }
+
+    .problem-card {
+      background: var(--color-surface);
+      border: 1px solid var(--color-border);
+      border-radius: var(--radius-lg);
+      padding: 32px;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .problem-card::before {
+      content: '';
+      position: absolute;
+      top: 0; left: 0; right: 0;
+      height: 2px;
+      background: linear-gradient(90deg, var(--color-warn), transparent);
+    }
+
+    .problem-icon {
+      font-size: 1.8rem;
+      margin-bottom: 16px;
+    }
+
+    .problem-card h3 {
+      color: var(--color-text);
+      margin-bottom: 8px;
+    }
+
+    .problem-card p {
+      font-size: 0.9rem;
+      line-height: 1.6;
+    }
+
+    /* ── Promise section ── */
+    #promise {
+      border-top: 1px solid var(--color-border);
+    }
+
+    .promise-layout {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 64px;
+      align-items: center;
+      margin-top: 56px;
+    }
+
+    @media (max-width: 720px) {
+      .promise-layout { grid-template-columns: 1fr; gap: 40px; }
+    }
+
+    .promise-list {
+      list-style: none;
+      display: flex;
+      flex-direction: column;
+      gap: 20px;
+    }
+
+    .promise-list li {
+      display: flex;
+      gap: 16px;
+      align-items: flex-start;
+    }
+
+    .check {
+      width: 24px;
+      height: 24px;
+      flex-shrink: 0;
+      background: var(--color-accent-glow);
+      border: 1px solid var(--color-accent);
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin-top: 2px;
+    }
+
+    .check svg { color: var(--color-accent); }
+
+    .promise-list li .text h3 {
+      color: var(--color-text);
+      margin-bottom: 4px;
+    }
+
+    .promise-list li .text p {
+      font-size: 0.9rem;
+    }
+
+    /* ── Mock dashboard widget ── */
+    .mock-dashboard {
+      background: var(--color-surface);
+      border: 1px solid var(--color-border);
+      border-radius: var(--radius-lg);
+      overflow: hidden;
+      box-shadow: 0 24px 80px rgba(0,0,0,0.4), 0 0 0 1px rgba(255,255,255,0.04);
+    }
+
+    .mock-header {
+      background: var(--color-surface-2);
+      padding: 14px 20px;
+      border-bottom: 1px solid var(--color-border);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      font-size: 0.8rem;
+    }
+
+    .mock-header .title { font-weight: 600; color: var(--color-text); }
+    .mock-header .date { color: var(--color-muted); }
+
+    .mock-body { padding: 20px; }
+
+    .mock-row {
+      display: grid;
+      grid-template-columns: 1fr auto auto;
+      gap: 16px;
+      align-items: center;
+      padding: 12px 0;
+      border-bottom: 1px solid var(--color-border);
+      font-size: 0.85rem;
+    }
+
+    .mock-row:last-child { border-bottom: none; }
+
+    .mock-account { font-weight: 600; color: var(--color-text); }
+
+    .mock-sub {
+      font-size: 0.75rem;
+      color: var(--color-muted);
+      font-weight: 400;
+    }
+
+    .mock-margin {
+      font-weight: 700;
+      text-align: right;
+    }
+
+    .mock-margin.warn { color: var(--color-warn); }
+    .mock-margin.ok { color: #22c55e; }
+
+    .mock-delta {
+      font-size: 0.75rem;
+      padding: 3px 8px;
+      border-radius: 4px;
+      font-weight: 600;
+      white-space: nowrap;
+    }
+
+    .mock-delta.down {
+      background: rgba(249,115,22,0.15);
+      color: var(--color-warn);
+    }
+
+    .mock-delta.up {
+      background: rgba(34,197,94,0.12);
+      color: #22c55e;
+    }
+
+    .mock-footer {
+      padding: 12px 20px;
+      background: var(--color-surface-2);
+      border-top: 1px solid var(--color-border);
+      font-size: 0.75rem;
+      color: var(--color-muted);
+      text-align: center;
+    }
+
+    /* ── Proof section ── */
+    #proof {
+      border-top: 1px solid var(--color-border);
+    }
+
+    .proof-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 2px;
+      background: var(--color-border);
+      border: 1px solid var(--color-border);
+      border-radius: var(--radius-lg);
+      overflow: hidden;
+      margin-top: 56px;
+    }
+
+    @media (max-width: 640px) {
+      .proof-grid { grid-template-columns: 1fr; }
+    }
+
+    .proof-stat {
+      background: var(--color-surface);
+      padding: 40px 36px;
+      text-align: center;
+    }
+
+    .proof-number {
+      font-size: 3rem;
+      font-weight: 800;
+      letter-spacing: -0.04em;
+      color: var(--color-text);
+      line-height: 1;
+      margin-bottom: 8px;
+    }
+
+    .proof-number .unit {
+      font-size: 1.5rem;
+      color: var(--color-accent);
+    }
+
+    .proof-label {
+      font-size: 0.9rem;
+      color: var(--color-muted);
+      max-width: 200px;
+      margin: 0 auto;
+    }
+
+    /* ── Closing CTA ── */
+    #closing {
+      border-top: 1px solid var(--color-border);
+      text-align: center;
+    }
+
+    #closing .container {
+      max-width: 640px;
+    }
+
+    #closing h2 {
+      margin-bottom: 16px;
+    }
+
+    #closing p {
+      margin-bottom: 40px;
+      font-size: 1.05rem;
+    }
+
+    .fine-print {
+      margin-top: 20px;
+      font-size: 0.8rem;
+      color: var(--color-muted);
+    }
+
+    /* ── Footer ── */
+    footer {
+      border-top: 1px solid var(--color-border);
+      padding: 28px 0;
+    }
+
+    .footer-inner {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 16px;
+      flex-wrap: wrap;
+    }
+
+    .footer-copy {
+      font-size: 0.8rem;
+      color: var(--color-muted);
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Wordmark -->
+  <header>
+    <div class="container">
+      <a class="wordmark" href="/">
+        <div class="wordmark-icon">
+          <svg width="18" height="18" viewBox="0 0 18 18" fill="none" aria-hidden="true">
+            <path d="M3 14L9 4L15 14H3Z" fill="white" opacity="0.9"/>
+            <circle cx="9" cy="9" r="2.5" fill="white"/>
+          </svg>
+        </div>
+        <span class="wordmark-text">Nexus <span>Pulse</span></span>
+      </a>
+    </div>
+  </header>
+
+  <!-- Hero -->
+  <section id="hero">
+    <div class="container">
+      <div class="hero-badge">
+        <span class="dot"></span>
+        For delivery &amp; finance leaders
+      </div>
+      <h1 class="hero-title">
+        Know which accounts need<br class="hide-sm"/>
+        attention <span class="highlight">today</span>.
+      </h1>
+      <p class="hero-subtitle">
+        Real-time margin signals across every account — with numbers you can defend in the room, not explanations you'll reconstruct on Monday.
+      </p>
+      <a href="/book-demo" class="cta">
+        Book a demo
+        <svg width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden="true">
+          <path d="M3 8H13M13 8L9 4M13 8L9 12" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+      </a>
+      <p class="hero-trust">
+        <strong>15-minute session.</strong> No slides, no pitch — just your data model and a live walkthrough.
+      </p>
+    </div>
+  </section>
+
+  <!-- Problem -->
+  <section id="problem">
+    <div class="container">
+      <p class="eyebrow">The gap you're living with</p>
+      <h2 style="max-width:600px; margin-top:16px;">Margin problems surface in the post-mortem, not the week they're fixable.</h2>
+      <div class="problem-grid">
+        <div class="problem-card">
+          <div class="problem-icon">📊</div>
+          <h3>Numbers that arrive too late</h3>
+          <p>By the time monthly reports are cut, the account has already missed its target and the conversation with the client is awkward.</p>
+        </div>
+        <div class="problem-card">
+          <div class="problem-icon">🔍</div>
+          <h3>No defensible line of sight</h3>
+          <p>Finance asks "why is this account down?" and delivery scrambles to reconstruct what happened from three different spreadsheets.</p>
+        </div>
+        <div class="problem-card">
+          <div class="problem-icon">⏱️</div>
+          <h3>Action windows close quietly</h3>
+          <p>The week you could have rebalanced resources or renegotiated scope passes before anyone flags the signal.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Promise -->
+  <section id="promise">
+    <div class="container">
+      <p class="eyebrow">What Nexus Pulse gives you</p>
+      <h2 style="max-width:480px; margin-top:16px;">A single view of every account that needs your attention — right now.</h2>
+      <div class="promise-layout">
+        <ul class="promise-list">
+          <li>
+            <div class="check">
+              <svg width="12" height="12" viewBox="0 0 12 12" fill="none" aria-hidden="true">
+                <path d="M2 6L5 9L10 3" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
+              </svg>
+            </div>
+            <div class="text">
+              <h3>Daily account health, not monthly surprises</h3>
+              <p>Margin calculations run every night so you walk into every week knowing which accounts are on track and which need intervention.</p>
+            </div>
+          </li>
+          <li>
+            <div class="check">
+              <svg width="12" height="12" viewBox="0 0 12 12" fill="none" aria-hidden="true">
+                <path d="M2 6L5 9L10 3" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
+              </svg>
+            </div>
+            <div class="text">
+              <h3>Numbers you can defend</h3>
+              <p>Every figure traces back to a source — timesheet data, contracted rate, and delivered scope. No one asks "where did this come from?" twice.</p>
+            </div>
+          </li>
+          <li>
+            <div class="check">
+              <svg width="12" height="12" viewBox="0 0 12 12" fill="none" aria-hidden="true">
+                <path d="M2 6L5 9L10 3" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
+              </svg>
+            </div>
+            <div class="text">
+              <h3>Early enough to act</h3>
+              <p>Flag a risk three weeks before close instead of three days. The window for resource rebalancing or scope conversation stays open.</p>
+            </div>
+          </li>
+          <li>
+            <div class="check">
+              <svg width="12" height="12" viewBox="0 0 12 12" fill="none" aria-hidden="true">
+                <path d="M2 6L5 9L10 3" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
+              </svg>
+            </div>
+            <div class="text">
+              <h3>Built for delivery and finance together</h3>
+              <p>One shared view eliminates the "two versions of the truth" problem between ops and finance at quarter-end.</p>
+            </div>
+          </li>
+        </ul>
+
+        <!-- Mock dashboard -->
+        <div class="mock-dashboard" aria-label="Example account health dashboard">
+          <div class="mock-header">
+            <span class="title">Account Pulse — Today</span>
+            <span class="date">Oct 1, 2026</span>
+          </div>
+          <div class="mock-body">
+            <div class="mock-row">
+              <div>
+                <div class="mock-account">Alderton Group</div>
+                <div class="mock-sub">Managed Services · Month 8</div>
+              </div>
+              <div class="mock-margin warn">34.1%</div>
+              <div class="mock-delta down">↓ 8.4 pts</div>
+            </div>
+            <div class="mock-row">
+              <div>
+                <div class="mock-account">Meridian Health</div>
+                <div class="mock-sub">Staff Aug · Month 3</div>
+              </div>
+              <div class="mock-margin warn">41.2%</div>
+              <div class="mock-delta down">↓ 5.1 pts</div>
+            </div>
+            <div class="mock-row">
+              <div>
+                <div class="mock-account">Cascade Retail</div>
+                <div class="mock-sub">Fixed Price · Phase 2</div>
+              </div>
+              <div class="mock-margin ok">52.7%</div>
+              <div class="mock-delta up">↑ 1.3 pts</div>
+            </div>
+            <div class="mock-row">
+              <div>
+                <div class="mock-account">Northview Capital</div>
+                <div class="mock-sub">T&amp;M · Sprint 14</div>
+              </div>
+              <div class="mock-margin ok">48.0%</div>
+              <div class="mock-delta up">↑ 0.5 pts</div>
+            </div>
+          </div>
+          <div class="mock-footer">2 accounts need attention · Updated 07:00 this morning</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Proof points -->
+  <section id="proof">
+    <div class="container">
+      <p class="eyebrow" style="text-align:center;">Why it matters</p>
+      <div class="proof-grid">
+        <div class="proof-stat">
+          <div class="proof-number">3<span class="unit">wk</span></div>
+          <div class="proof-label">Average lead time before a margin miss becomes visible without real-time tooling</div>
+        </div>
+        <div class="proof-stat">
+          <div class="proof-number">4<span class="unit">hrs</span></div>
+          <div class="proof-label">Typical time finance and delivery spend reconciling numbers before a client QBR</div>
+        </div>
+        <div class="proof-stat">
+          <div class="proof-number">1<span class="unit">view</span></div>
+          <div class="proof-label">Single shared source of truth — no more two versions of the spreadsheet</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Closing CTA -->
+  <section id="closing">
+    <div class="container">
+      <p class="eyebrow">Ready to see it on your accounts?</p>
+      <h2 style="margin-top:16px;">Stop finding out about margin problems after the fact.</h2>
+      <p>See Nexus Pulse on a live walkthrough — your account structure, your numbers, fifteen minutes.</p>
+      <a href="/book-demo" class="cta">
+        Book a demo
+        <svg width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden="true">
+          <path d="M3 8H13M13 8L9 4M13 8L9 12" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+      </a>
+      <p class="fine-print">No commitment. No deck. 15 minutes.</p>
+    </div>
+  </section>
+
+  <!-- Footer -->
+  <footer>
+    <div class="container">
+      <div class="footer-inner">
+        <a class="wordmark" href="/" style="text-decoration:none;">
+          <div class="wordmark-icon" style="width:24px;height:24px;border-radius:6px;">
+            <svg width="13" height="13" viewBox="0 0 18 18" fill="none" aria-hidden="true">
+              <path d="M3 14L9 4L15 14H3Z" fill="white" opacity="0.9"/>
+              <circle cx="9" cy="9" r="2.5" fill="white"/>
+            </svg>
+          </div>
+          <span class="wordmark-text" style="font-size:0.95rem;">Nexus <span>Pulse</span></span>
+        </a>
+        <span class="footer-copy">&copy; 2026 Nexus Pulse. All rights reserved.</span>
+      </div>
+    </div>
+  </footer>
+
+</body>
+</html>
